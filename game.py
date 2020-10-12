@@ -89,7 +89,7 @@ if ans == 'yes':
         if not member.stay:
             game_on = True
     
-    #game continues untill there`s some players playing in game 
+    #game continues untill there are some players playing in game 
     while game_on and members:
 
         dealer.stay = False
@@ -144,7 +144,7 @@ if ans == 'yes':
                 if not member.stay:
                     member.hit(dealer.deal())
 
-                    #calculate all possible combination
+                    #calculate all possible cost combinations
                     member.calc()
 
         #adds to dealer`s hand 2 cards, last one facedown
@@ -187,6 +187,9 @@ if ans == 'yes':
                 for card in member.empty_hand():
                     #cards are passed to dealers stack
                     dealer.fill_stack(card)
+                
+                #No one can have black jack more 
+                break
 
         #read player`s decision and start the round
         for member in members:
@@ -209,6 +212,7 @@ if ans == 'yes':
 
                 #if player able to split i add a new option for his move
                 if (not member.split) and (member.hand[0].rank == member.hand[1].rank):
+                      
                     #create a new option
                     options['split'] = 3
 
@@ -218,6 +222,7 @@ if ans == 'yes':
                 input_right = False
                 while not input_right:
                     try:
+                        #iterate through dictionary keys
                         for option in options:
                             print(f"To {option} type {options[option]}", end = ' ')
 
@@ -234,12 +239,12 @@ if ans == 'yes':
                 if ans == 1:
                     member.hit(dealer.deal())
                     member.calc()
-
-                    #if player busts
-                    #must consider the minimal possible cost
+                      
+                    #in case of bust i must consider the minimal possible cost
                     if member.comb_cost['min'] > 21:
                         print(f"\n{member.name}\nYour score is {member.comb_cost['min']}, ({member.comb_cost['max']})")
                         
+                        #player drops his cards and reset comb cost
                         for card in member.bust():
                             print(card)
                             dealer.fill_stack(card)
@@ -250,6 +255,7 @@ if ans == 'yes':
                 
                 #player decided to split
                 elif ans == 3:
+                              
                     #make a player place a bet due to the fact that he splitted
                     member.place(bet)
                     member.split = True
@@ -297,7 +303,7 @@ if ans == 'yes':
 
             for member in members:
 
-                #win only those who didn`t busted or winned with blackjack (they haven`t emptied their hands)
+                #win only those agreed to play and who didn`t busted or winned with blackjack (they haven`t emptied their hands)
                 if member.hand:
                     prize = bet*win_rate['dealer bust']
                     try:
